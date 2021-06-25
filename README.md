@@ -1,9 +1,18 @@
 # 2FA_using_TOTP
 Two-Factor Authentication using TOTP
 
+Features implemented:
+1. Command line tool for user registration and user login
+2. Client and server communicate over a TLS socket
+3. Self signed cert for TLS
+4. SRP protocol for password based authentication
+5. 2FA registration and QR code generation
+6. TOTP token generation and verification
+7. Database encryption/decryption using AES
+
 Requirements:
 
-The code was tested on Ubuntu 20.04 with python3. Please run them as:
+The code was tested on Ubuntu 20.04 with python3. To run, use:
 python3 server_tls.py
 python3 client_tls.py
 
@@ -24,26 +33,28 @@ For TOTP:
 Google authenticator app installed on any phone/tab
  
 How to run: (Steps which need user inputs are marked with > )
-1.> Run "server_tls.py" first in a terminal. Command : "python3 server_tls.py"
-2.> Server prompts for admin password. This is because database is being AES encrypted. Enter a password for the first time and remember it, as it is required for running server again.
-3.> If password is lost, delete "registered_users.enc" and start again.
-4.> In another window, run "client_tls.py". Command : "python3 client_tls.py". For client to work, server should be running and admin password should be verified
+
+1. Run "server_tls.py" first in a terminal. Command : "python3 server_tls.py" 
+2. Server prompts for admin password. This is because database is being AES encrypted. Enter a password for the first time and remember it, as it is required for running server again.
+3. If password is lost, delete "registered_users.enc" and start again.
+4. In another window, run "client_tls.py". Command : "python3 client_tls.py". For client to work, server should be running and admin password should be verified
 5.  Client prompts to select 1 for User registration and 2 for User login. For new user, select 1
-6.> Enter username and password (minimum length sepcified, max set to 50 characters)
+6. Enter username and password (minimum length sepcified, max set to 50 characters)
 7.  A secure TLS connection is formed between client and server. SRP protocol is followed where client only sends username, verifier key and salt.
 8.  Server decrypts .csv file and checks if user already exists. If the file does not exists, new file gets created.
 9.  Server registers using SRP protocol where it stores verification key, salt and username for new user in an encrypted file. 
 10. Once this registration is successful, server will generate a TOTP secret using a random number generator.
 11. This is shared with client which displays secret as QR code.
-12.> Use Google Authenticator to scan this QR code
+12. Use Google Authenticator to scan this QR code
 
 Login:
-13.> Once a new user is created, option 2 can be selected for login.
-14.> Enter user name and password of a registered user.
-15.  If user credential is invalid, error is displayed. (Server verifies user from the encrypted database) 
-16.  Once username and password is entered, authentication is done based on SRP. Client generates "A" and sends this to server along with username.
-17.  Server decrypts the database, retrieves user details from database (verification key, salt, secret)
-18.  SRP protocol is followed as below:
+13. Once a new user is created, option 2 can be selected for login.
+14. Enter user name and password of a registered user.
+15. If user credential is invalid, error is displayed. (Server verifies user from the encrypted database) 
+16. Once username and password is entered, authentication is done based on SRP. Client generates "A" and sends this to server along with username.
+17. Server decrypts the database, retrieves user details from database (verification key, salt, secret)
+18. SRP protocol is followed as below:
+
 	  Client => Server: username, A
 	  Server => Client: s, B
 	  Client => Server: M
@@ -57,20 +68,9 @@ Login:
 24.> Ctrl+C command can be used to stop the client and server applications.
 
 
-Features implemented:
-I have implemented all the tasks listed in the proposal:
-1. Command line tool for user registration and user login
-2. Client and server communicate over a TLS socket
-3. Self signed cert for TLS
-4. SRP protocol for password based authentication
-5. 2FA registration and QR code generation
-6. TOTP token generation and verification
-7. Database encryption/decryption using AES
 
 
 
-Resolving frequent occuring issues:
-1. "Address already in use" error. This is HTTP port in use error, this happens if the client is still running. Close application and wait for a minute or two.
-if not resolved, change port number in both client and server (ex: 8080 to 8081 )
-2. "[Errno 111] Connection refused". This is because the server is not started yet. Launch server and enter admin password and try again.
+
+
 
